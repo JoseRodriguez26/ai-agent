@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Image from "next/image"; // <-- Added for Next.js Image
 
 interface Message {
   sender: "user" | "ai";
@@ -16,10 +17,14 @@ const AVATARS = {
     </div>
   ),
   ai: (
-    <img
+    // Replaced <img> with <Image />
+    <Image
       src="/elon.jpg"
       alt="Elon Musk"
+      width={32}
+      height={32}
       className="w-8 h-8 rounded-full object-cover shadow-md border-2 border-gray-900"
+      priority
     />
   ),
 };
@@ -118,9 +123,15 @@ function AgentCard({ agentId }: { agentId: number }) {
   );
 }
 
+interface GoogleResult {
+  title: string;
+  link: string;
+  snippet: string;
+}
+
 function GoogleSearchTab() {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<GoogleResult[]>([]); // <-- Specify type instead of any[]
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -137,8 +148,8 @@ function GoogleSearchTab() {
         ]);
         setLoading(false);
       }, 1000);
-    } catch (err) {
-      setError("Failed to fetch results.");
+    } catch {
+      setError("Failed to fetch results."); // <-- Removed unused err
       setLoading(false);
     }
   }
